@@ -1,0 +1,28 @@
+public class GenericClass<TEntity> :  where TEntity : class
+{
+	private readonly CareerCloudContext _dbContext;
+	private readonly DbSet<TEntity> _dbSet;
+
+	public GenericClass()
+	{  
+		if (this._dbContext == null)
+		{
+		  _dbContext = new CareerCloudContext();
+		  _dbSet = _dbContext.Set<TEntity>();
+		}
+	}
+
+	public void Add(params TEntity[] items)
+	{
+		foreach (TEntity item in items)
+		{
+		  _dbSet.Add(item);
+		}
+	}
+	
+	public IList<TEntity> GetList(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] navigationProperties)
+	{
+		return _dbSet.AsQueryable().Where(where).FirstOrDefault();
+	}
+
+}
